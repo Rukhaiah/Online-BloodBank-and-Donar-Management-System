@@ -1,9 +1,13 @@
 <?php 
 // DB credentials.
-define('DB_HOST','localhost');
-define('DB_USER','root');
-define('DB_PASS','');
-define('DB_NAME','bbdms');
+$server = "bloodserver.mysql.database.azure.com";
+$userid ="bloodbank";
+$Password = "RukkuSreya@2024";
+$myDB = "bloodbank";
+$con = mysqli_connect($server,$userid,$Password,$myDB);
+if (mysqli_connect_errno()) {
+echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
 // Establish database connection.
 try
 {
