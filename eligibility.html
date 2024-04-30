@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blood Donation Eligibility Checker</title>
+<style>
+    body {
+        background-image: url('https://static.timesofisrael.com/blogs/uploads/2019/02/bloodtest.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    #form-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+</style>
+<script>
+function checkEligibility() {
+    var gender = document.querySelector('input[name="gender"]:checked');
+    var lastDonationDate = document.getElementById("lastDonationDate").value;
+    var today = new Date();
+    var lastDonation = new Date(lastDonationDate);
+    var eligibilityResult = document.getElementById("eligibilityResult");
+    var additionalCriteria = document.querySelectorAll('input[name="additional_criteria[]"]:checked');
+
+    if (!gender) {
+        eligibilityResult.textContent = "Please select your gender.";
+        return;
+    }
+
+    if (gender.value === "female") {
+        var eligibleMonth = 4;
+    } else if (gender.value === "male") {
+        var eligibleMonth = 3;
+    }
+
+    var monthsSinceLastDonation = (today.getFullYear() - lastDonation.getFullYear()) * 12 + (today.getMonth() - lastDonation.getMonth());
+
+    // Check if any additional criteria, except "None of the above," are selected
+    var additionalCriteriaSelected = false;
+    additionalCriteria.forEach(function(criteria) {
+        if (criteria.value !== "none_of_the_above") {
+            additionalCriteriaSelected = true;
+        }
+    });
+
+    if (monthsSinceLastDonation >= eligibleMonth && !additionalCriteriaSelected) {
+        eligibilityResult.textContent = "You are eligible to donate blood.";
+        // Proceed to step 2
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+    } else {
+        var notEligibleMessage = "Sorry, you are not eligible to donate blood.";
+        if (additionalCriteriaSelected) {
+            notEligibleMessage += " Selected additional criteria: ";
+            additionalCriteria.forEach(function(criteria) {
+                if (criteria.value !== "none_of_the_above") {
+                    notEligibleMessage += criteria.value + ", ";
+                }
+            });
+            notEligibleMessage = notEligibleMessage.slice(0, -2); // Remove trailing comma and space
+        }
+        else {
+			 var monthsToWait = eligibleMonth - monthsSinceLastDonation;
+            notEligibleMessage += " for " + monthsToWait + " months.";
+        }
+        eligibilityResult.textContent = notEligibleMessage;
+        // Ensure step 2 is hidden
+        document.getElementById("step2").style.display = "none";
+    }
+}
+function checkEligibilityStep2() {
+        var name = document.getElementById("name").value;
+        var age = document.getElementById("age").value;
+        var weight = document.getElementById("weight").value;
+        var additionalCriteria = document.querySelectorAll('input[name="additional_criteria[]"]:checked');
+
+        // Check if any additional criteria, except "None of the above," are selected
+        var additionalCriteriaSelected = false;
+        additionalCriteria.forEach(function(criteria) {
+            if (criteria.value !== "none_of_the_above") {
+                additionalCriteriaSelected = true;
+            }
+        });
+
+        if (name && age && weight && !additionalCriteriaSelected) {
+            window.location.href = "become-donar.php"; // Navigate to the next page
+        } else {
+            var notEligibleMessage = "Sorry, you are not eligible to donate blood.";
+            if (additionalCriteriaSelected) {
+                notEligibleMessage += " Selected additional criteria: ";
+                additionalCriteria.forEach(function(criteria) {
+                    if (criteria.value !== "none_of_the_above") {
+                        notEligibleMessage += criteria.value + ", ";
+                    }
+                });
+                notEligibleMessage = notEligibleMessage.slice(0, -2); // Remove trailing comma and space
+            }
+            alert(notEligibleMessage);
+        }
+    }
+</script>
+</head>
+<body>
+<?php include('includes/header.php');?>
+    <div id="form-container">
+        <div id="step1">
+            <h2>Step 1: Blood Donation Eligibility Checker</h2>
+
+            <form id="bloodDonationForm">
+                <label for="gender">Gender:</label><br>
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">Male</label><br>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">Female</label><br><br>
+
+                <label for="lastDonationDate">Last Donation Date:</label><br>
+                <input type="date" id="lastDonationDate" name="lastDonationDate"><br><br>
+
+                <button type="button" onclick="checkEligibility()">Check Eligibility</button>
+            </form>
+
+            <p id="eligibilityResult"></p>
+        </div>
+
+        <div id="step2" style="display: none;">
+            <h2>Step 2: Blood Donation Eligibility Form</h2>
+            <form>
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required><br>
+                <label for="age">Age:</label><br>
+                <input type="number" id="age" name="age" min="16" max="65" required><br>
+                <label for="weight">Weight (kg):</label><br>
+                <input type="number" id="weight" name="weight" min="40" required><br>
+                
+                <h3>Additional Criteria:</h3>
+                <input type="checkbox" id="cancer" name="additional_criteria[]" value="cancer" >
+                <label for="cancer">Have had most types of cancer</label><br>
+                <input type="checkbox" id="heart_condition" name="additional_criteria[]" value="heart_condition" >
+                <label for="heart_condition">Have some heart conditions</label><br>
+                <input type="checkbox" id="blood_transfusion" name="additional_criteria[]" value="blood_transfusion" >
+                <label for="blood_transfusion">Received blood, platelets, plasma or any other blood products after 1 January 1980</label><br>
+                <input type="checkbox" id="organ_transplant" name="additional_criteria[]" value="organ_transplant" >
+                <label for="organ_transplant">Have had an organ transplant</label><br>
+                <input type="checkbox" id="hiv_positive" name="additional_criteria[]" value="hiv_positive">
+                <label for="hiv_positive">Tested positive for HIV</label><br>
+                <input type="checkbox" id="hepatitis" name="additional_criteria[]" value="hepatitis">
+                <label for="hepatitis">Are a hepatitis B or C carrier</label><br>
+                <input type="checkbox" id="drug_abuse" name="additional_criteria[]" value="drug_abuse">
+                <label for="drug_abuse">Have injected non-prescribed drugs including body-building and injectable tanning agents</label><br>
+                <input type="checkbox" id="doctor_prescribed_drug" name="additional_criteria[]" value="doctor_prescribed_drug">
+                <label for="doctor_prescribed_drug">Doctor prescribed the drugs</label><br>
+                <input type="checkbox" id="none_of_the_above" name="additional_criteria[]" value="none_of_the_above">
+                <label for="none_of_the_above">None of the above</label><br>
+                <br>
+                <button type="button" onclick="checkEligibilityStep2()">Check Eligibility</button>
+            </form>
+        </div>
+    </div>
+	<?php include('includes/footer.php');?>
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/tether/tether.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
