@@ -43,6 +43,11 @@ echo "<script type='text/javascript'> document.location = 'change-password.php';
 	<link rel="stylesheet" href="css/fileinput.min.css">
 	<link rel="stylesheet" href="css/awesome-bootstrap-checkbox.css">
 	<link rel="stylesheet" href="css/style.css">
+	<script>
+    function navigateToChatbot() {
+        window.location.href = "chatbot.html";
+    }
+</script>
 </head>
 
 <body>
@@ -65,7 +70,7 @@ echo "<script type='text/javascript'> document.location = 'change-password.php';
 
 								
 
-									<button class="btn btn-primary btn-block" name="login" type="submit">LOGIN</button>
+									<button class="btn btn-primary btn-block" name="login" onclick="navigateToChatbot()" type="submit">LOGIN</button>
 
 								</form>
 							</div>
