@@ -60,7 +60,7 @@ echo "<script type='text/javascript'> document.location = 'change-password.php';
 						<h1 class="text-center text-bold text-light mt-4x">Online BloodBank & Donor Management System Sign in</h1>
 						<div class="well row pt-2x pb-3x bk-light">
 							<div class="col-md-8 col-md-offset-2">
-								<form method="get" action="chatbot.html">
+								<form  action="change-password.php">
 
 									<label for="" class="text-uppercase text-sm">Your Username </label>
 									<input type="text" placeholder="Username" name="username" class="form-control mb">
